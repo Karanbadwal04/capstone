@@ -9,7 +9,7 @@ export default function Messages() {
   
   const [selectedChat, setSelectedChat] = useState(targetUser || null);
   const [conversations, setConversations] = useState([
-    { userId: 'john@gmail.com', name: 'John Client', lastMessage: 'Perfect. I have deposited the $45.', time: '10:15 AM', unread: 2 },
+    { userId: 'john@gmail.com', name: 'John Client', lastMessage: 'Perfect. I have deposited the ₹45.', time: '10:15 AM', unread: 2 },
     { userId: 'sarah@college.edu', name: 'Sarah Designer', lastMessage: 'I can deliver in 3 days', time: 'Yesterday', unread: 0 },
     { userId: 'mike@company.com', name: 'Mike Marketing', lastMessage: 'Thanks for the work!', time: '2 days ago', unread: 0 },
   ]);
@@ -23,7 +23,7 @@ export default function Messages() {
       'john@gmail.com': [
         { id: 1, sender: 'them', text: "Hi! I saw your 3D Logo gig. Are you available?", time: "10:00 AM" },
         { id: 2, sender: 'me', text: "Yes, I am! I can start once the Escrow is funded.", time: "10:05 AM" },
-        { id: 3, sender: 'them', text: "Perfect. I have deposited the $45.", time: "10:15 AM" },
+        { id: 3, sender: 'them', text: "Perfect. I have deposited the ₹45.", time: "10:15 AM" },
       ],
       'sarah@college.edu': [
         { id: 1, sender: 'them', text: "Can you do logo design?", time: "Yesterday" },
@@ -89,8 +89,16 @@ export default function Messages() {
   const currentConversation = conversations.find(c => c.userId === selectedChat);
 
   return (
-    <div className="min-h-screen pt-4 pb-20 px-4" style={{ backgroundColor: 'var(--bg-dark)' }}>
-      <div className="max-w-6xl mx-auto rounded-2xl shadow-2xl border overflow-hidden h-[80vh] flex" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
+    <div className="min-h-screen pt-4 pb-20 px-4 relative overflow-hidden" style={{ backgroundColor: 'var(--bg-dark)' }}>
+      {/* Background Decorations */}
+      <div className="absolute top-10 right-20 animate-float opacity-20">
+        <div className="w-32 h-32 bg-gradient-to-br from-brand-orange/50 to-purple-500/50 rounded-full blur-3xl"></div>
+      </div>
+      <div className="absolute bottom-20 left-20 animate-float-delayed opacity-20">
+        <div className="w-40 h-40 bg-gradient-to-br from-blue-500/50 to-cyan-500/50 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="max-w-6xl mx-auto rounded-2xl shadow-2xl border overflow-hidden h-[80vh] flex backdrop-blur-lg relative z-10" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
         {/* Conversations List */}
         <div className="w-1/3 border-r flex flex-col" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
           <div className="p-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
@@ -123,8 +131,11 @@ export default function Messages() {
                 }}
               >
                 <div className="flex items-start gap-3">
-                  <div className="w-12 h-12 rounded-full bg-brand-orange/20 flex items-center justify-center font-bold text-brand-orange">
-                    {conv.name.charAt(0)}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-brand-orange to-orange-600 rounded-full blur-md opacity-30 group-hover:opacity-60 transition-opacity"></div>
+                    <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-brand-orange/30 to-orange-600/30 border-2 border-brand-orange/50 flex items-center justify-center font-bold text-brand-orange shadow-lg group-hover:scale-110 transition-transform">
+                      {conv.name.charAt(0)}
+                    </div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
@@ -187,12 +198,19 @@ export default function Messages() {
                   </div>
                 ) : (
                   currentMessages.map(msg => (
-                    <div key={msg.id} className={`flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[70%] rounded-2xl px-4 py-2 ${msg.sender === 'me' ? 'bg-brand-orange text-white' : ''}`}
+                    <div key={msg.id} className={`flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'} animate-slideIn`}>
+                      <div className={`max-w-[70%] rounded-2xl px-4 py-3 shadow-lg hover:scale-[1.02] transition-all duration-200 ${
+                        msg.sender === 'me' 
+                          ? 'bg-gradient-to-r from-brand-orange to-orange-600 text-white' 
+                          : 'border border-white/10 backdrop-blur-sm'
+                      }`}
                         style={msg.sender !== 'me' ? { backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' } : {}}
                       >
-                        <p className="text-sm">{msg.text}</p>
-                        <p className="text-xs mt-1 opacity-70">{msg.time}</p>
+                        <p className="text-sm leading-relaxed">{msg.text}</p>
+                        <p className="text-xs mt-1.5 opacity-70 flex items-center gap-1">
+                          {msg.time}
+                          {msg.sender === 'me' && <CheckCheck className="w-3 h-3" />}
+                        </p>
                       </div>
                     </div>
                   ))
@@ -216,7 +234,7 @@ export default function Messages() {
                   />
                   <button
                     type="submit"
-                    className="p-2 bg-brand-orange text-white rounded-full hover:bg-orange-600 transition"
+                    className="p-3 bg-gradient-to-r from-brand-orange to-orange-600 text-white rounded-full hover:scale-110 hover:shadow-lg hover:shadow-brand-orange/50 transition-all duration-300"
                   >
                     <Send className="w-5 h-5" />
                   </button>

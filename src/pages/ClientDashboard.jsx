@@ -24,7 +24,7 @@ export default function ClientDashboard() {
             <div key={o.id} className="bg-brand-card p-6 rounded-xl border border-white/10 flex justify-between items-center">
               <div>
                 <h3 className="text-xl font-bold text-white">{o.title}</h3>
-                <p className="text-sm text-brand-muted">Status: {o.status} | Escrow: ${o.amount}</p>
+                <p className="text-sm text-brand-muted">Status: {o.status} | Escrow: ₹{o.amount}</p>
               </div>
               {o.status === 'UNDER_REVIEW' ? (
                 <div className="flex gap-4">

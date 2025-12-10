@@ -44,7 +44,7 @@ export default function StudentEarnings() {
               <p className="text-brand-muted text-sm">Total Earned</p>
               <TrendingUp className="w-5 h-5 text-green-500" />
             </div>
-            <h3 className="text-3xl font-bold text-white">${earnings.totalEarned.toFixed(2)}</h3>
+            <h3 className="text-3xl font-bold text-white">₹{earnings.totalEarned.toFixed(2)}</h3>
           </div>
 
           {/* In Escrow (Locked) */}
@@ -53,7 +53,7 @@ export default function StudentEarnings() {
               <p className="text-brand-muted text-sm">In Escrow (Locked)</p>
               <Lock className="w-5 h-5 text-yellow-500" />
             </div>
-            <h3 className="text-3xl font-bold text-yellow-400">${earnings.inEscrow.toFixed(2)}</h3>
+            <h3 className="text-3xl font-bold text-yellow-400">₹{earnings.inEscrow.toFixed(2)}</h3>
             <p className="text-xs text-brand-muted mt-2">Waiting for client approval</p>
           </div>
 
@@ -63,7 +63,7 @@ export default function StudentEarnings() {
               <p className="text-brand-muted text-sm">Available</p>
               <CheckCircle className="w-5 h-5 text-green-500" />
             </div>
-            <h3 className="text-3xl font-bold text-green-400">${earnings.available.toFixed(2)}</h3>
+            <h3 className="text-3xl font-bold text-green-400">₹{earnings.available.toFixed(2)}</h3>
             <button className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition text-sm font-semibold">
               Withdraw
             </button>
@@ -126,7 +126,7 @@ export default function StudentEarnings() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-white font-bold">${tx.amount.toFixed(2)}</p>
+                    <p className="text-white font-bold">₹{tx.amount.toFixed(2)}</p>
                     <p className="text-xs text-brand-muted capitalize">{tx.status}</p>
                   </div>
                 </div>

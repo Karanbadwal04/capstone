@@ -83,7 +83,21 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 pt-24" style={{ background: 'linear-gradient(to bottom right, var(--bg-dark), var(--bg-dark), var(--bg-card))' }}>
+    <div className="min-h-screen flex items-center justify-center p-4 pt-24 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom right, var(--bg-dark), var(--bg-dark), var(--bg-card))' }}>
+      {/* Floating 3D Decorative Elements */}
+      <div className="absolute top-10 left-10 animate-float">
+        <div className="w-24 h-24 bg-gradient-to-br from-brand-orange/30 to-purple-500/30 rounded-3xl backdrop-blur-sm border border-white/10 transform rotate-12 shadow-2xl"></div>
+      </div>
+      <div className="absolute top-1/4 right-20 animate-float-delayed">
+        <div className="w-32 h-32 bg-gradient-to-br from-blue-500/30 to-cyan-500/30 rounded-full backdrop-blur-sm border border-white/10 shadow-2xl"></div>
+      </div>
+      <div className="absolute bottom-20 left-1/4 animate-float">
+        <div className="w-20 h-20 bg-gradient-to-br from-pink-500/30 to-red-500/30 rounded-2xl backdrop-blur-sm border border-white/10 transform -rotate-12 shadow-2xl"></div>
+      </div>
+      <div className="absolute bottom-1/4 right-10 animate-float-delayed">
+        <div className="w-28 h-28 bg-gradient-to-br from-green-500/30 to-emerald-500/30 rounded-3xl backdrop-blur-sm border border-white/10 transform rotate-45 shadow-2xl"></div>
+      </div>
+
       {alert && (
         <CustomAlert 
           message={alert.message} 
@@ -92,16 +106,19 @@ export default function Auth() {
           duration={3000}
         />
       )}
-      <div className="max-w-md w-full">
+      <div className="max-w-md w-full relative z-10">
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold text-brand-orange mb-4">Micro-Job</h1>
+          <div className="relative inline-block mb-4">
+            <h1 className="text-5xl font-bold text-brand-orange mb-4 animate-pulse">Micro-Job</h1>
+            <div className="absolute -inset-4 bg-brand-orange/20 blur-3xl rounded-full -z-10"></div>
+          </div>
           <p className="text-lg mb-2" style={{ color: 'var(--text-muted)' }}>{isLogin ? 'Welcome Back' : 'Create Account'}</p>
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
             {isLogin ? 'Login to access your account' : 'Sign up with any email address'}
           </p>
         </div>
 
-        <div className="rounded-2xl p-8 border shadow-xl" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
+        <div className="rounded-2xl p-8 border shadow-xl backdrop-blur-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
           <div className="mb-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
             <div className="flex items-start gap-3">
               <Shield className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />

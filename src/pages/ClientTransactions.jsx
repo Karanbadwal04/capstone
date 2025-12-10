@@ -85,7 +85,7 @@ export default function ClientTransactions() {
                     <p className="text-brand-muted text-sm mb-4">Seller: {tx.sellerName}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-brand-orange mb-2">${tx.amount.toFixed(2)}</p>
+                    <p className="text-2xl font-bold text-brand-orange mb-2">₹{tx.amount.toFixed(2)}</p>
                     <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(tx.status)}`}>
                       {getStatusIcon(tx.status)}
                       {tx.status.replace(/_/g, ' ').toUpperCase()}
@@ -111,7 +111,7 @@ export default function ClientTransactions() {
                       </div>
                       <div>
                         <p className="text-brand-muted text-sm mb-1">Commission</p>
-                        <p className="text-white">${(tx.amount * 0.1).toFixed(2)} (10%)</p>
+                        <p className="text-white">₹{(tx.amount * 0.1).toFixed(2)} (10%)</p>
                       </div>
                     </div>
 

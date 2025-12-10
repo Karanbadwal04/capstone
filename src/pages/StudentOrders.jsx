@@ -116,7 +116,7 @@ export default function StudentOrders() {
                     <p className="text-brand-muted text-sm">Client: {order.clientName}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-brand-orange mb-2">${order.amount}</p>
+                    <p className="text-2xl font-bold text-brand-orange mb-2">₹{order.amount}</p>
                     <div className="flex items-center gap-2 text-sm">
                       {getStatusIcon(order.status)}
                       <span className={`font-semibold ${
@@ -202,7 +202,7 @@ export default function StudentOrders() {
                         <p className="text-green-400 text-sm flex items-center gap-2 mb-3">
                           <CheckCircle className="w-4 h-4" /> Work Approved! Payment Released!
                         </p>
-                        <p className="text-brand-muted text-sm">💰 ${order.amount} transferred to your wallet (${(order.amount * 0.9).toFixed(2)} after 10% platform fee)</p>
+                        <p className="text-brand-muted text-sm">💰 ₹{order.amount} transferred to your wallet (₹{(order.amount * 0.9).toFixed(2)} after 10% platform fee)</p>
                       </div>
                     )}
 

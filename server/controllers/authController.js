@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
 
 // Approved university domains for student verification
 const APPROVED_DOMAINS = ['lpu.in', '.edu', '.ac.in', 'university.com', 'college.com'];
@@ -8,14 +10,40 @@ const isUniversityEmail = (email) => {
   return APPROVED_DOMAINS.some(d => domain && domain.toLowerCase().endsWith(d.toLowerCase()));
 };
 
-// Mock database (replace with actual DB)
-let users = {};
+// Simple file-based persistence so accounts survive server restarts
+const USERS_FILE = path.join(__dirname, '..', 'data', 'users.json');
+
+const loadUsers = () => {
+  try {
+    if (fs.existsSync(USERS_FILE)) {
+      const raw = fs.readFileSync(USERS_FILE, 'utf-8');
+      return raw ? JSON.parse(raw) : {};
+    }
+  } catch (err) {
+    console.error('Failed to load users file:', err);
+  }
+  return {};
+};
+
+const saveUsers = (users) => {
+  try {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Failed to save users file:', err);
+  }
+};
+
+let users = loadUsers();
 
 exports.register = (req, res) => {
   const { email, password, name, role } = req.body;
   
   if (!email || !password || !name || !role) {
     return res.status(400).json({ error: "All fields required" });
+  }
+
+  if (!['student', 'client', 'admin'].includes(role)) {
+    return res.status(400).json({ error: "Invalid role" });
   }
 
   // Student must use university email
@@ -47,6 +75,8 @@ exports.register = (req, res) => {
       inEscrow: 0
     }
   };
+
+  saveUsers(users);
 
   const token = jwt.sign({ 
     email, 

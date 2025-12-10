@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit } from 'lucide-react';
 
 export default function StudentGigs() {
@@ -36,9 +36,26 @@ export default function StudentGigs() {
         setFormData({ title: '', description: '', price: '', category: 'coding', deliveryDays: 1 });
         setShowForm(false);
         alert('Gig created successfully!');
+        // Reload gigs from server
+        fetchGigs();
+      } else {
+        const error = await response.json();
+        alert('Error creating gig: ' + (error.error || 'Unknown error'));
       }
     } catch (error) {
       alert('Error creating gig');
+    }
+  };
+
+  const fetchGigs = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/gigs/all');
+      if (response.ok) {
+        const allGigs = await response.json();
+        setGigs(allGigs);
+      }
+    } catch (error) {
+      console.error('Error fetching gigs:', error);
     }
   };
 
@@ -47,6 +64,10 @@ export default function StudentGigs() {
       setGigs(gigs.filter(g => g.id !== id));
     }
   };
+
+  useEffect(() => {
+    fetchGigs();
+  }, []);
 
   return (
     <div className="min-h-screen bg-brand-dark p-8 pt-24">
@@ -73,7 +94,7 @@ export default function StudentGigs() {
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  placeholder="e.g., I will review your thesis for $20"
+                  placeholder="e.g., I will review your thesis for ₹2000"
                   required
                   className="w-full bg-brand-dark rounded-lg px-4 py-3 text-white border border-white/10 focus:border-brand-orange outline-none"
                 />
@@ -111,7 +132,7 @@ export default function StudentGigs() {
                 </div>
 
                 <div>
-                  <label className="block text-white text-sm font-semibold mb-2">Price ($)</label>
+                  <label className="block text-white text-sm font-semibold mb-2">Price (₹)</label>
                   <input
                     type="number"
                     name="price"
@@ -175,7 +196,7 @@ export default function StudentGigs() {
                   </div>
                 </div>
                 <div className="text-right ml-4">
-                  <p className="text-3xl font-bold text-brand-orange mb-4">${gig.price}</p>
+                  <p className="text-3xl font-bold text-brand-orange mb-4">₹{gig.price}</p>
                   <div className="flex gap-2">
                     <button className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition">
                       <Edit className="w-5 h-5 text-white" />

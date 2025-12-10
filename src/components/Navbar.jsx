@@ -36,19 +36,25 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-brand-orange backdrop-blur-lg" style={{ backgroundColor: 'var(--navbar-bg)' }}>
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold text-brand-orange flex items-center gap-2">
-          <Home className="w-6 h-6" /> Micro-Job
+    <nav
+      className="sticky top-0 z-50 backdrop-blur-xl shadow-lg"
+      style={{ backgroundColor: 'var(--navbar-bg)' }}
+    >
+      <div
+        className="container mx-auto px-4 py-4 flex justify-between items-center border rounded-2xl mt-2"
+        style={{ backdropFilter: 'blur(14px)', backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
+      >
+        <Link to="/" className="text-2xl font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+          <Home className="w-6 h-6 text-brand-orange" /> Micro-Job
         </Link>
         
-        <div className="hidden md:flex gap-8 items-center">
-          <Link to="/" className="text-brand-text hover:text-brand-orange transition flex items-center gap-2">
+        <div className="hidden md:flex gap-6 items-center">
+          <Link to="/" className="text-brand-text hover:text-brand-orange transition flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5">
             <Home className="w-4 h-4" /> Home
           </Link>
 
           {isLoggedIn && (
-            <Link to="/dashboard" className="text-brand-text hover:text-brand-orange transition flex items-center gap-2">
+            <Link to="/dashboard" className="text-brand-text hover:text-brand-orange transition flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5">
               <BarChart3 className="w-4 h-4" /> Dashboard
             </Link>
           )}
@@ -64,7 +70,7 @@ export default function Navbar() {
                 <Briefcase className="w-4 h-4" /> Sell Services
               </button>
             <div 
-              className={`absolute left-0 mt-2 w-56 bg-brand-card border-2 border-brand-orange/30 rounded-xl shadow-2xl transition-all duration-300 ${
+              className={`absolute left-0 mt-2 w-60 bg-brand-card/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl transition-all duration-300 ${
                 showStudentMenu ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'
               }`}
               style={{ zIndex: 100 }}
@@ -72,7 +78,7 @@ export default function Navbar() {
               <div className="py-2">
                 <Link 
                   to="/student/profile" 
-                  className="flex items-center gap-3 px-4 py-3 text-brand-text hover:text-brand-orange hover:bg-brand-orange/10 transition group"
+                  className="flex items-center gap-3 px-4 py-3 text-brand-text hover:text-brand-orange hover:bg-white/5 transition group rounded-t-2xl"
                 >
                   <span className="text-2xl group-hover:scale-110 transition">👤</span>
                   <div>
@@ -113,7 +119,7 @@ export default function Navbar() {
                 <div className="border-t mx-2" style={{ borderColor: 'var(--border-color)' }}></div>
                 <Link 
                   to="/profile" 
-                  className="flex items-center gap-3 px-4 py-3 text-brand-text hover:text-brand-orange hover:bg-brand-orange/10 transition group rounded-b-xl"
+                  className="flex items-center gap-3 px-4 py-3 text-brand-text hover:text-brand-orange hover:bg-white/5 transition group rounded-b-2xl"
                 >
                   <span className="text-2xl group-hover:scale-110 transition">⚙️</span>
                   <div>
@@ -137,7 +143,7 @@ export default function Navbar() {
                 <ShoppingBag className="w-4 h-4" /> Buy Services
               </button>
             <div 
-              className={`absolute left-0 mt-2 w-56 bg-brand-card border-2 border-brand-orange/30 rounded-xl shadow-2xl transition-all duration-300 ${
+              className={`absolute left-0 mt-2 w-60 bg-brand-card/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl transition-all duration-300 ${
                 showClientMenu ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'
               }`}
               style={{ zIndex: 100 }}
@@ -145,7 +151,7 @@ export default function Navbar() {
               <div className="py-2">
                 <Link 
                   to="/client/search" 
-                  className="flex items-center gap-3 px-4 py-3 text-brand-text hover:text-brand-orange hover:bg-brand-orange/10 transition group rounded-t-xl"
+                  className="flex items-center gap-3 px-4 py-3 text-brand-text hover:text-brand-orange hover:bg-white/5 transition group rounded-t-2xl"
                 >
                   <span className="text-2xl group-hover:scale-110 transition">🔍</span>
                   <div>
@@ -176,7 +182,7 @@ export default function Navbar() {
                 <div className="border-t mx-2" style={{ borderColor: 'var(--border-color)' }}></div>
                 <Link 
                   to="/profile" 
-                  className="flex items-center gap-3 px-4 py-3 text-brand-text hover:text-brand-orange hover:bg-brand-orange/10 transition group rounded-b-xl"
+                  className="flex items-center gap-3 px-4 py-3 text-brand-text hover:text-brand-orange hover:bg-white/5 transition group rounded-b-2xl"
                 >
                   <span className="text-2xl group-hover:scale-110 transition">⚙️</span>
                   <div>
@@ -190,7 +196,7 @@ export default function Navbar() {
           )}
 
           {isLoggedIn && userType !== 'admin' && (
-            <Link to="/messages" className="text-brand-text hover:text-brand-orange transition flex items-center gap-2">
+            <Link to="/messages" className="text-brand-text hover:text-brand-orange transition flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5">
               <MessageSquare className="w-4 h-4" /> Messages
             </Link>
           )}
@@ -223,11 +229,11 @@ export default function Navbar() {
           </button>
 
           {!isLoggedIn ? (
-            <Link to="/auth" className="bg-white/10 text-white px-4 py-2 rounded-lg hover:bg-white/20 transition flex items-center gap-2 border border-white/20">
+            <Link to="/auth" className="bg-gradient-to-r from-brand-orange/80 to-orange-600/80 text-white px-4 py-2 rounded-lg hover:shadow-brand-orange/50 transition flex items-center gap-2 border border-brand-orange/50 shadow-lg hover:scale-105">
               <LogIn className="w-4 h-4" /> Login
             </Link>
           ) : (
-            <button onClick={handleLogout} className="bg-red-500/20 text-red-400 px-4 py-2 rounded-lg hover:bg-red-500/30 transition flex items-center gap-2 border border-red-500/30">
+            <button onClick={handleLogout} className="bg-red-500/20 text-red-400 px-4 py-2 rounded-lg hover:bg-red-500/30 transition flex items-center gap-2 border border-red-500/30 shadow-lg hover:scale-105">
               <LogOut className="w-4 h-4" /> Logout
             </button>
           )}

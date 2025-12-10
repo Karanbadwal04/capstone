@@ -99,7 +99,15 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4" style={{ backgroundColor: 'var(--bg-dark)' }}>
+    <div className="min-h-screen pt-24 pb-12 px-4 relative overflow-hidden" style={{ backgroundColor: 'var(--bg-dark)' }}>
+      {/* Decorative Background */}
+      <div className="absolute top-10 right-20 animate-float opacity-30">
+        <div className="w-32 h-32 bg-gradient-to-br from-brand-orange/50 to-purple-500/50 rounded-full blur-3xl"></div>
+      </div>
+      <div className="absolute bottom-20 left-20 animate-float-delayed opacity-30">
+        <div className="w-40 h-40 bg-gradient-to-br from-blue-500/50 to-cyan-500/50 rounded-full blur-3xl"></div>
+      </div>
+
       {alert && (
         <CustomAlert 
           message={alert.message} 
@@ -108,15 +116,16 @@ export default function Profile() {
           duration={3000}
         />
       )}
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
-        <div className="rounded-2xl p-8 mb-8 border" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
+        <div className="rounded-2xl p-8 mb-8 border backdrop-blur-sm hover:shadow-2xl transition-all duration-300" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
           <div className="flex flex-col md:flex-row items-center gap-6">
-            <div className="relative">
-              <div className="w-24 h-24 bg-gradient-to-br from-brand-orange to-brand-glow rounded-full flex items-center justify-center">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-br from-brand-orange to-brand-glow rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity"></div>
+              <div className="relative w-24 h-24 bg-gradient-to-br from-brand-orange to-brand-glow rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
                 <User className="w-12 h-12 text-white" />
               </div>
-              <button className="absolute bottom-0 right-0 w-8 h-8 bg-brand-orange rounded-full flex items-center justify-center hover:bg-orange-600 transition">
+              <button className="absolute bottom-0 right-0 w-8 h-8 bg-brand-orange rounded-full flex items-center justify-center hover:bg-orange-600 hover:scale-125 transition-all duration-300 shadow-lg">
                 <Camera className="w-4 h-4 text-white" />
               </button>
             </div>
@@ -383,24 +392,35 @@ export default function Profile() {
                   </div>
 
                   {/* Skills Display */}
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-3">
                     {profileData.skills && profileData.skills.length > 0 ? (
-                      profileData.skills.map((skill, index) => (
-                        <span
-                          key={index}
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-brand-orange/20 text-brand-orange rounded-full font-medium"
-                        >
-                          {skill}
-                          {isEditing && (
-                            <button
-                              onClick={() => handleRemoveSkill(skill)}
-                              className="hover:bg-brand-orange/30 rounded-full w-5 h-5 flex items-center justify-center transition"
-                            >
-                              ×
-                            </button>
-                          )}
-                        </span>
-                      ))
+                      profileData.skills.map((skill, index) => {
+                        const colors = [
+                          'from-brand-orange/30 to-orange-500/30 text-brand-orange border-brand-orange/40',
+                          'from-purple-500/30 to-pink-500/30 text-purple-400 border-purple-500/40',
+                          'from-blue-500/30 to-cyan-500/30 text-blue-400 border-blue-500/40',
+                          'from-green-500/30 to-emerald-500/30 text-green-400 border-green-500/40',
+                          'from-yellow-500/30 to-amber-500/30 text-yellow-400 border-yellow-500/40',
+                          'from-red-500/30 to-pink-500/30 text-red-400 border-red-500/40'
+                        ];
+                        const colorClass = colors[index % colors.length];
+                        return (
+                          <span
+                            key={index}
+                            className={`inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r ${colorClass} rounded-xl font-semibold border backdrop-blur-sm hover:scale-110 hover:shadow-lg transition-all duration-300`}
+                          >
+                            {skill}
+                            {isEditing && (
+                              <button
+                                onClick={() => handleRemoveSkill(skill)}
+                                className="hover:scale-125 rounded-full w-5 h-5 flex items-center justify-center transition-all duration-200 hover:rotate-90"
+                              >
+                                ×
+                              </button>
+                            )}
+                          </span>
+                        );
+                      })
                     ) : (
                       <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No skills added yet</p>
                     )}

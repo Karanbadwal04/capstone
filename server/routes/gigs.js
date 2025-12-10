@@ -1,20 +1,40 @@
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
+const path = require('path');
 
-// Mock gigs database
-let gigs = [
-  {
-    id: 1,
-    title: "I will review your thesis for $20",
-    description: "Professional thesis review with detailed feedback",
-    price: 20,
-    category: "writing",
-    deliveryDays: 3,
-    seller: { id: 1, name: "Raj Kumar", verified: true },
-    rating: 4.8,
-    createdAt: new Date()
-  }
-];
+// Path to gigs data file
+const gigsFilePath = path.join(__dirname, '../data/gigs.json');
+
+// Initialize gigs data file if it doesn't exist
+if (!fs.existsSync(path.dirname(gigsFilePath))) {
+  fs.mkdirSync(path.dirname(gigsFilePath), { recursive: true });
+}
+
+if (!fs.existsSync(gigsFilePath)) {
+  const initialGigs = [
+    {
+      id: 1,
+      title: "I will review your thesis for ₹1500",
+      description: "Professional thesis review with detailed feedback",
+      price: 1500,
+      category: "writing",
+      deliveryDays: 3,
+      seller: { id: 1, name: "Raj Kumar", verified: true },
+      rating: 4.8,
+      createdAt: new Date()
+    }
+  ];
+  fs.writeFileSync(gigsFilePath, JSON.stringify(initialGigs, null, 2));
+}
+
+// Load gigs from file
+let gigs = JSON.parse(fs.readFileSync(gigsFilePath, 'utf-8'));
+
+// Save gigs to file
+const saveGigs = () => {
+  fs.writeFileSync(gigsFilePath, JSON.stringify(gigs, null, 2));
+};
 
 // Get all gigs
 router.get('/all', (req, res) => {
@@ -43,6 +63,7 @@ router.post('/create', (req, res) => {
   };
 
   gigs.push(gig);
+  saveGigs();
   res.status(201).json(gig);
 });
 
@@ -69,12 +90,14 @@ router.put('/:id', (req, res) => {
   gig.category = category || gig.category;
   gig.deliveryDays = deliveryDays || gig.deliveryDays;
 
+  saveGigs();
   res.json(gig);
 });
 
 // Delete gig
 router.delete('/:id', (req, res) => {
   gigs = gigs.filter(g => g.id != req.params.id);
+  saveGigs();
   res.json({ message: "Gig deleted" });
 });
 

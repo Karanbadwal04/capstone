@@ -113,7 +113,7 @@ export default function ClientOrders() {
                     <p className="text-brand-muted text-sm">Student: {order.studentName}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-brand-orange mb-2">${order.amount}</p>
+                    <p className="text-2xl font-bold text-brand-orange mb-2">₹{order.amount}</p>
                     <div className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${
                       order.status === 'deposit_pending' ? 'bg-blue-500/20 text-blue-400' :
                       order.status === 'in_escrow' ? 'bg-yellow-500/20 text-yellow-400' :
@@ -139,7 +139,7 @@ export default function ClientOrders() {
                     <Lock className="w-4 h-4 text-yellow-500 flex-shrink-0" />
                     <div>
                       <p className="text-brand-muted">In Escrow</p>
-                      <p className="text-white font-semibold">${order.amount}</p>
+                      <p className="text-white font-semibold">₹{order.amount}</p>
                     </div>
                   </div>
                   <div className="bg-brand-dark rounded-lg p-3 border border-white/5">
