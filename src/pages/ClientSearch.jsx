@@ -1,6 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Star, Clock, DollarSign, User } from 'lucide-react';
+import { Search, Filter, Star, Clock, DollarSign, User, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import PaymentModal from '../components/PaymentModal';
+
+// Mock gigs data
+const MOCK_GIGS = [
+  {
+    id: 1,
+    title: 'Professional Logo Design',
+    description: 'I will design a professional, modern logo for your business brand. Includes 3 revisions and unlimited variations.',
+    category: 'design',
+    price: 2500,
+    rating: 4.8,
+    deliveryDays: 3,
+    seller: { name: 'Priya Sharma', verified: true, email: 'priya@college.edu' },
+    image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=300&fit=crop'
+  },
+  {
+    id: 2,
+    title: 'Web Development - React App',
+    description: 'Build responsive React applications with modern UI. Full-stack web development with Node.js backend.',
+    category: 'coding',
+    price: 5000,
+    rating: 4.9,
+    deliveryDays: 7,
+    seller: { name: 'Arjun Patel', verified: true, email: 'arjun@college.edu' },
+    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop'
+  },
+  {
+    id: 3,
+    title: 'Content Writing - Blog Posts',
+    description: 'SEO-optimized blog posts, articles, and web copy. 500-2000 words per piece with research included.',
+    category: 'writing',
+    price: 800,
+    rating: 4.7,
+    deliveryDays: 2,
+    seller: { name: 'Neha Gupta', verified: true, email: 'neha@college.edu' },
+    image: 'https://images.unsplash.com/photo-1455849318169-8149e910e41d?w=400&h=300&fit=crop'
+  },
+  {
+    id: 4,
+    title: 'Math Tutoring - JEE Prep',
+    description: 'Expert guidance for JEE Main and Advanced. Cover algebra, calculus, coordinate geometry, and more.',
+    category: 'tutoring',
+    price: 1500,
+    rating: 4.9,
+    deliveryDays: 1,
+    seller: { name: 'Rahul Singh', verified: true, email: 'rahul@college.edu' },
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f70d504f0?w=400&h=300&fit=crop'
+  },
+  {
+    id: 5,
+    title: 'Video Editing - YouTube Content',
+    description: 'Professional video editing for YouTube, Reels, and TikTok. Includes effects, transitions, and color grading.',
+    category: 'video',
+    price: 3500,
+    rating: 4.8,
+    deliveryDays: 4,
+    seller: { name: 'Aisha Khan', verified: true, email: 'aisha@college.edu' },
+    image: 'https://images.unsplash.com/photo-1533391304282-0b232e42b237?w=400&h=300&fit=crop'
+  },
+  {
+    id: 6,
+    title: 'Graphic Design - Social Media',
+    description: 'Eye-catching Instagram posts, stories, and reels designs. Includes brand consistency and trending styles.',
+    category: 'design',
+    price: 1200,
+    rating: 4.7,
+    deliveryDays: 2,
+    seller: { name: 'Zara Malik', verified: true, email: 'zara@college.edu' },
+    image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=300&fit=crop'
+  }
+];
 
 export default function ClientSearch() {
   const navigate = useNavigate();
@@ -13,6 +84,10 @@ export default function ClientSearch() {
     minRating: 0
   });
   const [loading, setLoading] = useState(true);
+  
+  // Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [selectedGig, setSelectedGig] = useState(null);
 
   useEffect(() => {
     fetchGigs();
@@ -24,13 +99,27 @@ export default function ClientSearch() {
 
   const fetchGigs = async () => {
     try {
+      setLoading(true);
       const response = await fetch('http://localhost:5000/api/gigs/all');
       if (response.ok) {
         const data = await response.json();
-        setGigs(data);
+        // Merge with mock data if needed (for demo purposes, using real data)
+        const gigsWithDefaults = data.map(gig => ({
+          ...gig,
+          seller: gig.seller || { name: 'Student', verified: true, email: 'student@college.edu' },
+          image: gig.image || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop',
+          rating: gig.rating || 0,
+          deliveryDays: gig.deliveryDays || 3
+        }));
+        setGigs(gigsWithDefaults);
+      } else {
+        // Fallback to mock data if API fails
+        setGigs(MOCK_GIGS);
       }
     } catch (error) {
       console.error('Error fetching gigs:', error);
+      // Fallback to mock data
+      setGigs(MOCK_GIGS);
     } finally {
       setLoading(false);
     }
@@ -61,9 +150,42 @@ export default function ClientSearch() {
     setFiltered(result);
   };
 
-  const handleHire = (gigId) => {
-    // Navigate to hiring/escrow page
-    window.location.href = `/client-hire/${gigId}`;
+  const handleHire = (gig) => {
+    setSelectedGig(gig);
+    setShowModal(true);
+  };
+
+  const handlePaymentConfirm = async () => {
+    if (!selectedGig) return;
+    
+    try {
+      const clientId = localStorage.getItem('userId') || 'client_' + Date.now();
+      const studentId = selectedGig.seller.email;
+      
+      const response = await fetch('http://localhost:5000/api/escrow/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: selectedGig.title,
+          amount: selectedGig.price,
+          studentId: studentId,
+          clientId: clientId,
+          description: selectedGig.description
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert('✓ Payment initiated! Waiting for admin verification...');
+        setShowModal(false);
+        setSelectedGig(null);
+      } else {
+        alert('Error creating payment. Please try again.');
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Payment failed: ' + error.message);
+    }
   };
 
   return (
@@ -209,22 +331,10 @@ export default function ClientSearch() {
                         )}
                       </div>
                       <button
-                        onClick={() => handleHire(gig.id)}
-                        className="px-6 py-2.5 rounded-lg font-semibold border-2 border-brand-orange transition-all duration-300 shadow-lg hover:shadow-brand-orange/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-brand-orange/60"
-                        style={{
-                          backgroundColor: 'var(--bg-card)',
-                          color: 'var(--text-primary)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = 'var(--brand-orange, #f97316)';
-                          e.currentTarget.style.color = '#ffffff';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'var(--bg-card)';
-                          e.currentTarget.style.color = 'var(--text-primary)';
-                        }}
+                        onClick={() => handleHire(gig)}
+                        className="px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 bg-brand-orange hover:bg-orange-600 text-white transition-all duration-300 shadow-lg hover:shadow-brand-orange/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-brand-orange/60"
                       >
-                        Hire Now
+                        <ShieldCheck className="w-4 h-4" /> Hire Me
                       </button>
                     </div>
                     </div>
@@ -232,6 +342,18 @@ export default function ClientSearch() {
                 ))}
               </div>
             )}
+            
+            {/* Payment Modal */}
+            <PaymentModal
+              isOpen={showModal}
+              onClose={() => {
+                setShowModal(false);
+                setSelectedGig(null);
+              }}
+              onConfirm={handlePaymentConfirm}
+              amount={selectedGig?.price || 0}
+              upiId="karanvirpvtonly@oksbi"
+            />
           </div>
         </div>
       </div>

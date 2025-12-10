@@ -1,0 +1,32 @@
+{
+  "admin@lpu.in": {
+    "email": "admin@lpu.in",
+    "password": "1234",
+    "name": "admin",
+    "role": "student",
+    "verified": true,
+    "createdAt": "2025-12-10T08:22:39.089Z",
+    "profile": {
+      "bio": "",
+      "skills": [],
+      "rating": 0,
+      "earnings": 0,
+      "inEscrow": 0
+    }
+  },
+  "admin@gmail.com": {
+    "email": "admin@gmail.com",
+    "password": "1234",
+    "name": "admin",
+    "role": "client",
+    "verified": false,
+    "createdAt": "2025-12-10T08:25:24.843Z",
+    "profile": {
+      "bio": "",
+      "skills": [],
+      "rating": 0,
+      "earnings": 0,
+      "inEscrow": 0
+    }
+  }
+}

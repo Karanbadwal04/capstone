@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1001,
+    "gigId": 1,
+    "studentId": 1,
+    "clientId": 2,
+    "gigTitle": "Logo Design",
+    "studentName": "Raj Kumar",
+    "clientName": "Alex Johnson",
+    "amount": 50,
+    "status": "in_progress",
+    "createdAt": "2024-12-05T00:00:00.000Z",
+    "dueDate": "2024-12-08T00:00:00.000Z",
+    "messages": [],
+    "deliverables": null,
+    "rating": 0,
+    "review": ""
+  }
+]

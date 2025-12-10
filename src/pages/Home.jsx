@@ -216,9 +216,15 @@ export default function Home() {
           </div>
 
           <div className="mt-8 text-center">
-            <Link to="/client/search" className="inline-block bg-brand-orange hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition">
-              → Browse Services
-            </Link>
+            {isLoggedIn ? (
+              <Link to="/client/search" className="inline-block bg-brand-orange hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition">
+                → Browse Services
+              </Link>
+            ) : (
+              <Link to="/auth" className="inline-block bg-brand-orange hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition">
+                → Browse Services
+              </Link>
+            )}
           </div>
         </div>
       </div>

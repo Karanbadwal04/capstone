@@ -3,31 +3,30 @@ const escrowController = require('../controllers/escrowController');
 
 const router = express.Router();
 
-// Create escrow transaction
+// NEW QR PAYMENT FLOW ROUTES
+// 1. Client clicks "Hire Me" -> shows QR Modal
+// 2. Client scans QR, pays via UPI, clicks "I Have Paid"
 router.post('/create', escrowController.createEscrow);
 
-// Client deposits funds (locks them)
-router.post('/deposit', escrowController.depositFunds);
+// 3. Admin verifies payment (checks bank account)
+router.post('/admin-confirm', escrowController.adminConfirmPayment);
 
-// Student submits work
+// 4. Student submits work (after escrow funded)
 router.post('/submit-work', escrowController.submitWork);
 
-// Client approves work (releases payment)
+// 5. Client approves work (funds released)
 router.post('/approve', escrowController.approveWork);
 
-// Client requests revision
+// Alternative: Client requests revision
 router.post('/request-revision', escrowController.requestRevision);
 
-// Student resubmits after revision
-router.post('/resubmit-work', escrowController.resubmitWork);
+// Get all transactions
+router.get('/status', escrowController.getStatus);
 
-// Get status
-router.get('/status/:id', escrowController.getEscrowStatus);
+// Get pending payments for admin
+router.get('/pending', escrowController.getPendingPayments);
 
-// Admin handles disputes
-router.post('/resolve-dispute', escrowController.handleDispute);
-
-// List all
-router.get('/all', escrowController.getAllTransactions);
+// Get single transaction
+router.get('/:id', escrowController.getTransactionById);
 
 module.exports = router;

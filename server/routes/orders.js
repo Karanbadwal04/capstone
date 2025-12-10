@@ -1,8 +1,13 @@
 const express = require('express');
+const path = require('path');
+const { loadJson, saveJson } = require('../utils/fileStore');
+
 const router = express.Router();
 
-// Mock orders database
-let orders = [
+const ORDERS_FILE = path.join(__dirname, '..', 'data', 'orders.json');
+
+// Load persisted orders (or seed a default order)
+let orders = loadJson(ORDERS_FILE, [
   {
     id: 1001,
     gigId: 1,
@@ -20,7 +25,9 @@ let orders = [
     rating: 0,
     review: ""
   }
-];
+]);
+
+const persist = () => saveJson(ORDERS_FILE, orders);
 
 // Create order
 router.post('/create', (req, res) => {
@@ -47,6 +54,7 @@ router.post('/create', (req, res) => {
   };
 
   orders.push(order);
+  persist();
   res.status(201).json({ message: "Order created. Proceed to payment.", order });
 });
 
@@ -86,6 +94,7 @@ router.put('/:orderId/status', (req, res) => {
   }
 
   order.status = status;
+  persist();
   res.json({ message: "Order status updated", order });
 });
 
@@ -100,6 +109,7 @@ router.post('/:orderId/start-work', (req, res) => {
   order.status = 'in_progress';
   order.startedAt = new Date();
 
+  persist();
   res.json({ message: "Work started", order });
 });
 
@@ -121,6 +131,7 @@ router.post('/:orderId/submit-work', (req, res) => {
   order.submittedAt = new Date();
   order.submissionNotes = notes;
 
+  persist();
   res.json({ message: "Work submitted for review", order });
 });
 
@@ -142,6 +153,8 @@ router.post('/:orderId/approve', (req, res) => {
   order.rating = rating || 5;
   order.review = review || '';
 
+  persist();
+
   res.json({ 
     message: "Work approved! Payment released to student", 
     order,
@@ -162,6 +175,7 @@ router.post('/:orderId/request-revision', (req, res) => {
   order.status = 'revision_requested';
   order.revisionRequest = revisionRequest;
 
+  persist();
   res.json({ message: "Revision requested. Funds remain locked.", order });
 });
 
@@ -182,6 +196,7 @@ router.post('/:orderId/message', (req, res) => {
     timestamp: new Date()
   });
 
+  persist();
   res.json({ message: "Message added", order });
 });
 

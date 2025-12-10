@@ -1,111 +1,107 @@
-// Mock database for transactions
-let transactions = [
-  { 
-    id: 101, 
-    studentId: 1, 
-    clientId: 999, 
-    amount: 50, 
-    status: 'UNDER_REVIEW', 
-    title: "Logo Design v1",
-    gigId: 1,
-    createdAt: new Date(),
-    workSubmitted: new Date(),
-    deliveryDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
-  }
-];
+const path = require('path');
+const { loadJson, saveJson } = require('../utils/fileStore');
 
-let escrowVault = {}; // Track locked funds per transaction
+// File-based storage so data survives restarts and can be committed
+const TRANSACTIONS_FILE = path.join(__dirname, '..', 'data', 'transactions.json');
 
-// Create Escrow Transaction
+// Mock database for transactions with NEW QR PAYMENT FLOW
+let transactions = loadJson(TRANSACTIONS_FILE, []);
+
+const persist = () => saveJson(TRANSACTIONS_FILE, transactions);
+
+// ===== PAYMENT FLOW =====
+// 1. Client clicks "Hire Me" -> QR Modal shows with Amount
+// 2. Client scans QR, pays via UPI, clicks "I Have Paid"  
+// 3. Transaction created: status = WAITING_ADMIN_APPROVAL
+// 4. Admin checks bank, clicks "Confirm Payment"
+// 5. Status = IN_ESCROW (funds locked)
+// 6. Student sees "Escrow Funded" and works
+
+// Step 1: Client initiates payment (after scanning QR and paying)
 exports.createEscrow = (req, res) => {
-  const { gigId, studentId, clientId, amount, title, category } = req.body;
+  const { title, amount, studentId, clientId } = req.body;
   
-  if (!gigId || !studentId || !clientId || !amount) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
   const transaction = {
     id: Date.now(),
-    gigId,
-    studentId,
-    clientId,
+    studentId: studentId || 1,
+    clientId: clientId || 999,
     amount,
-    title: title || "Service",
-    category,
-    status: 'PENDING_PAYMENT',
+    title,
+    status: 'WAITING_ADMIN_APPROVAL', // WAITING FOR ADMIN VERIFICATION
     createdAt: new Date(),
-    workSubmitted: null,
-    completedAt: null,
-    rating: 0,
-    review: ''
+    qrScannedAt: new Date(),
+    paymentVerifiedAt: null,
+    escrowLockedAt: null
   };
-
+  
   transactions.push(transaction);
-
+  persist();
+  
   res.status(201).json({ 
-    message: "Escrow transaction created", 
+    message: "Payment proof submitted to admin",
     transaction,
-    nextStep: "Client must deposit funds to lock the transaction"
+    nextStep: "Admin will verify the payment within 5 minutes"
   });
 };
 
-// Client Deposits Funds (Step 1: Deposit)
-exports.depositFunds = (req, res) => {
-  const { transactionId, amount } = req.body;
-  const transaction = transactions.find(t => t.id == transactionId);
+// Step 2: Admin verifies payment (after checking bank account)
+exports.adminConfirmPayment = (req, res) => {
+  const { transactionId } = req.body;
+  const transaction = transactions.find(t => t.id === transactionId);
 
   if (!transaction) {
     return res.status(404).json({ error: "Transaction not found" });
   }
 
-  if (transaction.status !== 'PENDING_PAYMENT') {
-    return res.status(400).json({ error: "Transaction not ready for payment" });
+  if (transaction.status !== 'WAITING_ADMIN_APPROVAL') {
+    return res.status(400).json({ error: "Transaction not awaiting approval" });
   }
 
-  // Lock funds in escrow
-  transaction.status = 'IN_ESCROW_LOCKED';
-  escrowVault[transactionId] = {
-    amount,
-    lockedAt: new Date(),
-    releasedAt: null
-  };
+  // Admin confirmed - move to IN_ESCROW (funds locked)
+  transaction.status = 'IN_ESCROW';
+  transaction.paymentVerifiedAt = new Date();
+  transaction.escrowLockedAt = new Date();
+
+  persist();
 
   res.json({ 
-    message: "Funds deposited and locked in escrow vault", 
+    success: true,
+    message: "Payment verified! Funds locked in escrow.",
     transaction,
-    escrowInfo: escrowVault[transactionId]
+    studentNotification: "Your escrow is funded! You can now start working."
   });
 };
 
-// Student Submits Work (Step 2: Work Submission)
+// Step 3: Student submits work (after escrow is funded)
 exports.submitWork = (req, res) => {
-  const { transactionId, workDescription, deliverables } = req.body;
-  const transaction = transactions.find(t => t.id == transactionId);
+  const { transactionId } = req.body;
+  const transaction = transactions.find(t => t.id === transactionId);
 
   if (!transaction) {
     return res.status(404).json({ error: "Transaction not found" });
   }
 
-  if (transaction.status !== 'IN_ESCROW_LOCKED') {
-    return res.status(400).json({ error: "Funds must be locked before submitting work" });
+  if (transaction.status !== 'IN_ESCROW') {
+    return res.status(400).json({ error: "Escrow not funded yet" });
   }
 
   transaction.status = 'WORK_SUBMITTED';
-  transaction.workSubmitted = new Date();
-  transaction.workDescription = workDescription;
-  transaction.deliverables = deliverables;
+  transaction.workSubmittedAt = new Date();
+
+  persist();
 
   res.json({ 
-    message: "Work submitted! Waiting for client approval", 
+    success: true,
+    message: "Work submitted! Client reviewing...",
     transaction,
-    escrowStatus: "Funds remain locked until client approves"
+    escrowStatus: "Funds locked until client approves"
   });
 };
 
-// Client Approves Work (Step 3: Approval)
+// Step 4: Client approves work (releases funds from escrow)
 exports.approveWork = (req, res) => {
   const { transactionId, rating, review } = req.body;
-  const transaction = transactions.find(t => t.id == transactionId);
+  const transaction = transactions.find(t => t.id === transactionId);
 
   if (!transaction) {
     return res.status(404).json({ error: "Transaction not found" });
@@ -115,114 +111,67 @@ exports.approveWork = (req, res) => {
     return res.status(400).json({ error: "No work submitted to approve" });
   }
 
-  // Release funds from escrow
+  // Release funds from escrow to student
   transaction.status = 'COMPLETED';
   transaction.completedAt = new Date();
   transaction.rating = rating || 5;
   transaction.review = review || '';
+  transaction.fundsReleasedAt = new Date();
 
-  const escrow = escrowVault[transactionId];
-  if (escrow) {
-    escrow.releasedAt = new Date();
-  }
+  persist();
 
   res.json({ 
-    message: "Work approved! Payment released to student", 
+    success: true,
+    message: "Work approved! Funds released to student",
     transaction,
     studentEarnings: {
       amount: transaction.amount,
-      netAfterFee: transaction.amount * 0.9, // 10% platform fee
+      netAfterFee: transaction.amount * 0.9,
       status: "Transferred to student wallet"
     }
   });
 };
 
-// Client Requests Revision (Step 3 Alternative: Revision)
+// Alternative: Client requests revision
 exports.requestRevision = (req, res) => {
-  const { transactionId, revisionRequest } = req.body;
-  const transaction = transactions.find(t => t.id == transactionId);
+  const { transactionId, revisionMessage } = req.body;
+  const transaction = transactions.find(t => t.id === transactionId);
 
   if (!transaction) {
     return res.status(404).json({ error: "Transaction not found" });
   }
 
   transaction.status = 'REVISION_REQUESTED';
-  transaction.revisionRequest = revisionRequest;
+  transaction.revisionMessage = revisionMessage;
+
+  persist();
 
   res.json({ 
-    message: "Revision requested. Funds remain locked.", 
-    transaction,
-    escrowStatus: "Funds still in escrow until student resubmits"
-  });
-};
-
-// Resubmit after revision
-exports.resubmitWork = (req, res) => {
-  const { transactionId, workDescription, deliverables } = req.body;
-  const transaction = transactions.find(t => t.id == transactionId);
-
-  if (!transaction) {
-    return res.status(404).json({ error: "Transaction not found" });
-  }
-
-  if (transaction.status !== 'REVISION_REQUESTED') {
-    return res.status(400).json({ error: "No revision pending" });
-  }
-
-  transaction.status = 'WORK_SUBMITTED';
-  transaction.workDescription = workDescription;
-  transaction.deliverables = deliverables;
-  transaction.revisedAt = new Date();
-
-  res.json({ 
-    message: "Revised work resubmitted", 
+    success: true,
+    message: "Revision requested. Funds remain locked.",
     transaction
   });
 };
 
-// Get Escrow Status
-exports.getEscrowStatus = (req, res) => {
+// Get all transactions
+exports.getStatus = (req, res) => {
+  res.json(transactions);
+};
+
+// Get pending payments for admin dashboard
+exports.getPendingPayments = (req, res) => {
+  const pending = transactions.filter(t => t.status === 'WAITING_ADMIN_APPROVAL');
+  res.json(pending);
+};
+
+// Get transaction by ID
+exports.getTransactionById = (req, res) => {
   const { id } = req.params;
   const transaction = transactions.find(t => t.id == id);
-
+  
   if (!transaction) {
     return res.status(404).json({ error: "Transaction not found" });
   }
-
-  const escrow = escrowVault[id] || {};
-
-  res.json({
-    transaction,
-    escrowStatus: {
-      status: transaction.status,
-      amountLocked: escrow.amount || 0,
-      lockedAt: escrow.lockedAt,
-      releasedAt: escrow.releasedAt,
-      platformFee: transaction.amount ? (transaction.amount * 0.1).toFixed(2) : 0
-    }
-  });
-};
-
-// Dispute Management (Admin)
-exports.handleDispute = (req, res) => {
-  const { transactionId, resolution } = req.body;
-  const transaction = transactions.find(t => t.id == transactionId);
-
-  if (!transaction) {
-    return res.status(404).json({ error: "Transaction not found" });
-  }
-
-  transaction.status = 'DISPUTE_RESOLVED';
-  transaction.disputeResolution = resolution; // 'RELEASE_TO_STUDENT' or 'REFUND_TO_CLIENT'
-
-  res.json({ 
-    message: "Dispute resolved by admin", 
-    transaction,
-    resolution: `Funds ${resolution === 'RELEASE_TO_STUDENT' ? 'released to student' : 'refunded to client'}`
-  });
-};
-
-// List all transactions (for dashboard)
-exports.getAllTransactions = (req, res) => {
-  res.json(transactions);
+  
+  res.json(transaction);
 };

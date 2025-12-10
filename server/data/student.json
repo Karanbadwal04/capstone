@@ -1,0 +1,45 @@
+{
+  "profiles": {
+    "1": {
+      "userId": 1,
+      "name": "Raj Kumar",
+      "email": "raj@lpu.in",
+      "bio": "Expert in web development and design",
+      "skills": [
+        "JavaScript",
+        "React",
+        "Node.js",
+        "Figma"
+      ],
+      "rating": 4.8,
+      "verified": true,
+      "earnings": 1250,
+      "inEscrow": 450,
+      "portfolio": [],
+      "createdAt": "2025-12-10T00:00:00.000Z"
+    }
+  },
+  "earnings": {
+    "1": {
+      "totalEarned": 1250,
+      "inEscrow": 450,
+      "available": 800,
+      "transactions": [
+        {
+          "id": 101,
+          "title": "Logo Design",
+          "amount": 150,
+          "status": "completed",
+          "date": "2024-12-05"
+        },
+        {
+          "id": 102,
+          "title": "Website Review",
+          "amount": 75,
+          "status": "in_escrow",
+          "date": "2024-12-06"
+        }
+      ]
+    }
+  }
+}

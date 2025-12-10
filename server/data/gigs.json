@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "title": "I will review your thesis for ₹1500",
+    "description": "Professional thesis review with detailed feedback",
+    "price": 1500,
+    "category": "writing",
+    "deliveryDays": 3,
+    "seller": {
+      "id": 1,
+      "name": "Raj Kumar",
+      "verified": true
+    },
+    "rating": 4.8,
+    "createdAt": "2025-12-10T08:18:53.007Z"
+  },
+  {
+    "id": 1765355008039,
+    "title": "webside",
+    "description": "webside",
+    "price": 1000,
+    "category": "coding",
+    "deliveryDays": 7,
+    "seller": {
+      "id": 1,
+      "name": "Current User",
+      "verified": true
+    },
+    "rating": 0,
+    "orders": 0,
+    "createdAt": "2025-12-10T08:23:28.039Z"
+  },
+  {
+    "id": 1765356549510,
+    "title": "1",
+    "description": "1",
+    "price": 1,
+    "category": "coding",
+    "deliveryDays": 3,
+    "seller": {
+      "id": 1,
+      "name": "Current User",
+      "verified": true
+    },
+    "rating": 0,
+    "orders": 0,
+    "createdAt": "2025-12-10T08:49:09.510Z"
+  },
+  {
+    "id": 1765356623673,
+    "title": "webside",
+    "description": "webside",
+    "price": 2,
+    "category": "coding",
+    "deliveryDays": 3,
+    "seller": {
+      "id": 1,
+      "name": "Current User",
+      "verified": true
+    },
+    "rating": 0,
+    "orders": 0,
+    "createdAt": "2025-12-10T08:50:23.673Z"
+  }
+]

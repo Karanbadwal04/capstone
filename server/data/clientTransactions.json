@@ -1,0 +1,30 @@
+{
+  "clients": {
+    "1": [
+      {
+        "id": 101,
+        "gigTitle": "Logo Design",
+        "sellerName": "Raj Kumar",
+        "amount": 150,
+        "status": "completed",
+        "category": "design",
+        "createdAt": "2024-12-01T00:00:00.000Z",
+        "deliveryDate": "2024-12-05T00:00:00.000Z",
+        "rating": 5,
+        "review": "Excellent work, very professional!"
+      },
+      {
+        "id": 102,
+        "gigTitle": "Website Code Review",
+        "sellerName": "Priya Singh",
+        "amount": 75,
+        "status": "in_escrow",
+        "category": "coding",
+        "createdAt": "2024-12-05T00:00:00.000Z",
+        "deliveryDate": "2024-12-08T00:00:00.000Z",
+        "rating": 0,
+        "review": ""
+      }
+    ]
+  }
+}
