@@ -155,6 +155,110 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Potential Commercialization Partners Marquee */}
+      <div className="w-full py-20 px-4 overflow-hidden relative border-y" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
+        {/* Subtle ambient glow */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/2 -left-40 w-80 h-80 bg-brand-orange/10 rounded-full blur-3xl opacity-30"></div>
+          <div className="absolute top-1/2 -right-40 w-80 h-80 bg-brand-orange/5 rounded-full blur-3xl opacity-20"></div>
+        </div>
+
+        <style>{`
+          @keyframes partnerScroll {
+            0% {
+              transform: translateX(0);
+            }
+            100% {
+              transform: translateX(-50%);
+            }
+          }
+          
+          .partner-marquee-wrapper {
+            overflow: hidden;
+            background: linear-gradient(90deg, 
+              var(--bg-card) 0%, 
+              var(--bg-card) 5%,
+              transparent 15%, 
+              transparent 85%,
+              var(--bg-card) 95%,
+              var(--bg-card) 100%);
+            padding: 2.5rem 0;
+            position: relative;
+            z-index: 1;
+          }
+          
+          .partner-scroll-track {
+            display: flex;
+            gap: 3rem;
+            animation: partnerScroll 35s linear infinite;
+            width: fit-content;
+          }
+          
+          .partner-scroll-track:hover {
+            animation-play-state: paused;
+          }
+          
+          .partner-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            white-space: nowrap;
+            letter-spacing: 0.02em;
+            position: relative;
+            padding: 0.875rem 1.75rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+            
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+            border: 1px solid var(--border-color);
+            
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+            text-shadow: 0 1px 2px rgba(255, 107, 53, 0.1);
+            
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          
+          .partner-name::before {
+            content: '•';
+            color: #FF5500;
+            font-weight: bold;
+            font-size: 1.25rem;
+            margin-right: 0.25rem;
+          }
+          
+          .partner-name:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-hover);
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+            filter: drop-shadow(0 4px 16px rgba(255, 107, 53, 0.2))
+                    drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+            color: #FF5500;
+          }
+        `}</style>
+        
+        <div className="text-center mb-12 relative z-10">
+          <h2 className="text-3xl md:text-4xl font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
+            POTENTIAL COMMERCIALIZATION PARTNERS
+          </h2>
+          <p className="text-base" style={{ color: 'var(--text-muted)' }}>
+            Strategic partnerships with leading global platforms and initiatives
+          </p>
+        </div>
+        
+        <div className="partner-marquee-wrapper">
+          <div className="partner-scroll-track">
+            {['LinkedIn (Microsoft)', 'Internshala', 'Handshake', 'Upwork', 'Toptal', 'Coursera for Campus', 'NASSCOM (India)', 'Wipro\'s TalentNext Program', 'LinkedIn (Microsoft)', 'Internshala', 'Handshake', 'Upwork', 'Toptal', 'Coursera for Campus', 'NASSCOM (India)', 'Wipro\'s TalentNext Program'].map((partner, idx) => (
+              <div key={idx} className="partner-name">
+                {partner}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Student Journey */}
       <div id="how-it-works" className="py-20 px-4 border-y" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
         <div className="max-w-6xl mx-auto">

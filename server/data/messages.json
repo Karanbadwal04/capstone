@@ -1,0 +1,92 @@
+{
+  "conversations": {
+    "admin@gmail.com_student@college.edu": [
+      {
+        "id": 1765372746496,
+        "sender": "admin@gmail.com",
+        "receiver": "student@college.edu",
+        "text": "hlo",
+        "timestamp": "2025-12-10T13:19:06.497Z",
+        "read": false
+      },
+      {
+        "id": 1765372964266,
+        "sender": "admin@gmail.com",
+        "receiver": "student@college.edu",
+        "text": "hlo",
+        "timestamp": "2025-12-10T13:22:44.266Z",
+        "read": false
+      },
+      {
+        "id": 1765374321579,
+        "sender": "admin@gmail.com",
+        "receiver": "student@college.edu",
+        "text": "hlo",
+        "timestamp": "2025-12-10T13:45:21.579Z",
+        "read": false
+      }
+    ],
+    "admin@gmail.com_admin@lpu.in": [
+      {
+        "id": 1765374000001,
+        "sender": "admin@gmail.com",
+        "receiver": "admin@lpu.in",
+        "text": "hlo",
+        "timestamp": "2025-12-10T13:40:00.000Z",
+        "read": true
+      },
+      {
+        "id": 1765374277124,
+        "sender": "admin@lpu.in",
+        "receiver": "admin@gmail.com",
+        "text": "done",
+        "timestamp": "2025-12-10T13:44:37.124Z",
+        "read": true
+      },
+      {
+        "id": 1765374308157,
+        "sender": "admin@gmail.com",
+        "receiver": "admin@lpu.in",
+        "text": "ok nice",
+        "timestamp": "2025-12-10T13:45:08.157Z",
+        "read": true
+      },
+      {
+        "id": 1765375285399,
+        "sender": "admin@lpu.in",
+        "receiver": "admin@gmail.com",
+        "text": "gud work",
+        "timestamp": "2025-12-10T14:01:25.399Z",
+        "read": true
+      },
+      {
+        "id": 1765375298298,
+        "sender": "admin@lpu.in",
+        "receiver": "admin@gmail.com",
+        "text": "ok",
+        "timestamp": "2025-12-10T14:01:38.298Z",
+        "read": true
+      },
+      {
+        "id": 1765375317009,
+        "sender": "admin@gmail.com",
+        "receiver": "admin@lpu.in",
+        "text": "i see",
+        "timestamp": "2025-12-10T14:01:57.009Z",
+        "read": true
+      }
+    ]
+  },
+  "users": {
+    "admin@gmail.com": [
+      "admin@gmail.com_student@college.edu",
+      "admin@gmail.com_admin@lpu.in"
+    ],
+    "student@college.edu": [
+      "admin@gmail.com_student@college.edu"
+    ],
+    "admin@lpu.in": [
+      "admin@gmail.com_admin@lpu.in"
+    ]
+  }
+}

@@ -308,7 +308,7 @@ export default function ClientSearch() {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-4 flex-wrap">
                         <div className="flex items-center gap-3">
                           <div className="relative group/avatar">
                             <div className="absolute inset-0 bg-brand-orange rounded-full blur-md opacity-50 group-hover/avatar:opacity-75 transition-opacity"></div>
@@ -317,8 +317,13 @@ export default function ClientSearch() {
                             </div>
                           </div>
                         <div>
-                          <p className="text-white font-semibold text-sm">{gig.seller?.name || 'Student'}</p>
-                          {gig.seller?.verified && <p className="text-xs text-green-400">✓ Verified</p>}
+                          <button
+                            onClick={() => gig.seller?.email && navigate(`/profile/${gig.seller.email}`)}
+                            className="text-white font-semibold text-sm hover:text-brand-orange transition"
+                          >
+                            {gig.seller?.name || 'Student'}
+                            {gig.seller?.verified && <span className="text-green-400 ml-2">✓</span>}
+                          </button>
                         </div>
                         {gig.seller?.email && (
                           <button
@@ -330,12 +335,23 @@ export default function ClientSearch() {
                           </button>
                         )}
                       </div>
-                      <button
-                        onClick={() => handleHire(gig)}
-                        className="px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 bg-brand-orange hover:bg-orange-600 text-white transition-all duration-300 shadow-lg hover:shadow-brand-orange/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-brand-orange/60"
-                      >
-                        <ShieldCheck className="w-4 h-4" /> Hire Me
-                      </button>
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <button
+                          onClick={() => {
+                            const email = gig.seller?.email || 'student@college.edu';
+                            navigate(`/messages?user=${encodeURIComponent(email)}`);
+                          }}
+                          className="px-4 py-2.5 rounded-lg font-semibold border border-white/15 text-white hover:border-brand-orange hover:text-brand-orange transition-all duration-200"
+                        >
+                          Send Message
+                        </button>
+                        <button
+                          onClick={() => handleHire(gig)}
+                          className="px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 bg-brand-orange hover:bg-orange-600 text-white transition-all duration-300 shadow-lg hover:shadow-brand-orange/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-brand-orange/60"
+                        >
+                          <ShieldCheck className="w-4 h-4" /> Hire Me
+                        </button>
+                      </div>
                     </div>
                     </div>
                   </div>

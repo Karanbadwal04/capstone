@@ -7,6 +7,7 @@ const gigsRoutes = require('./routes/gigs');
 const studentRoutes = require('./routes/student');
 const clientRoutes = require('./routes/client');
 const ordersRoutes = require('./routes/orders');
+const messagesRoutes = require('./routes/messages');
 
 const app = express();
 const PORT = 5000;
@@ -23,6 +24,7 @@ app.use('/api/gigs', gigsRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/client', clientRoutes);
 app.use('/api/orders', ordersRoutes);
+app.use('/api/messages', messagesRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
