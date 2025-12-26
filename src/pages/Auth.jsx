@@ -48,7 +48,7 @@ export default function Auth() {
     const userType = isUniversityEmail(formData.email) ? 'student' : 'client';
 
     try {
-      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+      const endpoint = isLogin ? '/auth/login' : '/auth/register';
       const payload = isLogin 
         ? { email: formData.email, password: formData.password }
         : { email: formData.email, password: formData.password, name: formData.name, role: userType };
