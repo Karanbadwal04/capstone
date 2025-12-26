@@ -10,10 +10,11 @@ const ordersRoutes = require('./routes/orders');
 const messagesRoutes = require('./routes/messages');
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
+// CORS configuration for production (allow frontend domain)
+const allowedOrigin = process.env.CORS_ORIGIN || '*';
+app.use(cors({ origin: allowedOrigin }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -31,8 +32,38 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'Micro-Job Server Running', timestamp: new Date() });
 });
 
-app.listen(PORT, () => {
+// Root API info
+app.get('/api', (req, res) => {
+  res.json({
+    message: 'Micro-Job API',
+    available: ['/api/health', '/api/gigs/all', '/api/auth/login', '/api/auth/register']
+  });
+});
+
+const server = app.listen(PORT, () => {
   console.log(`✅ Micro-Job Server Running on Port ${PORT}`);
   console.log(`🔐 Escrow System Active`);
   console.log(`👥 Student Marketplace Ready`);
+  console.log(`ENV: CORS_ORIGIN=${allowedOrigin}`);
+});
+
+// Graceful shutdown handlers
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received - shutting down gracefully');
+  server.close(() => process.exit(0));
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received - shutting down');
+  server.close(() => process.exit(0));
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled Rejection:', reason);
+  process.exit(1);
 });
