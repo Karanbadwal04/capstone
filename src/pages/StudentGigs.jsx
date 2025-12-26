@@ -21,7 +21,7 @@ export default function StudentGigs() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/gigs/create', {
+      const response = await fetch(`${API_URL}/gigs/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ export default function StudentGigs() {
 
   const fetchGigs = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/gigs/all');
+      const response = await fetch(`${API_URL}/gigs/all`);
       if (response.ok) {
         const allGigs = await response.json();
         setGigs(allGigs);

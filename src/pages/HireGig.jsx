@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Package, Clock, DollarSign, Shield, ArrowLeft, CheckCircle } from 'lucide-react';
+import { API_URL } from '../config/apiConfig';
 
 export default function HireGig() {
   const { gigId } = useParams();
@@ -18,7 +19,7 @@ export default function HireGig() {
 
   const fetchGigDetails = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/gigs/${gigId}`);
+      const response = await fetch(`${API_URL}/gigs/${gigId}`);
       if (response.ok) {
         const data = await response.json();
         setGig(data);
@@ -44,7 +45,7 @@ export default function HireGig() {
       const token = localStorage.getItem('token');
       const userEmail = localStorage.getItem('userEmail');
       
-      const response = await fetch('http://localhost:5000/api/orders/create', {
+      const response = await fetch(`${API_URL}/orders/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

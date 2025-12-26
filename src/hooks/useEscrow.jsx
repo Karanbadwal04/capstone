@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_URL } from '../config/apiConfig';
 
 export const useEscrow = () => {
   const [escrow, setEscrow] = useState(null);
@@ -7,7 +8,7 @@ export const useEscrow = () => {
   const createEscrow = async (data) => {
     setLoading(true);
     try {
-      const res = await fetch('/api/escrow/create', {
+      const res = await fetch(`${API_URL}/escrow/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

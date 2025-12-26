@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Lock, CheckCircle, Clock, MessageSquare, Star, Loader } from 'lucide-react';
+import { API_URL } from '../config/apiConfig';
 
 export default function ClientOrders() {
   const [orders, setOrders] = useState([]);
@@ -17,7 +18,7 @@ export default function ClientOrders() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/client/${clientId}`);
+      const response = await fetch(`${API_URL}/orders/client/${clientId}`);
       const data = await response.json();
       setOrders(data);
       setLoading(false);
@@ -42,7 +43,7 @@ export default function ClientOrders() {
   const handleApprove = async (orderId) => {
     try {
       setApproving(orderId);
-      const response = await fetch(`http://localhost:5000/api/orders/${orderId}/approve`, {
+      const response = await fetch(`${API_URL}/orders/${orderId}/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -65,7 +66,7 @@ export default function ClientOrders() {
   const handleRequestRevision = async (orderId) => {
     try {
       setApproving(orderId);
-      const response = await fetch(`http://localhost:5000/api/orders/${orderId}/request-revision`, {
+      const response = await fetch(`${API_URL}/orders/${orderId}/request-revision`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

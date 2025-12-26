@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, CheckCircle, AlertCircle, MessageSquare, Upload, Loader } from 'lucide-react';
+import { API_URL } from '../config/apiConfig';
 
 export default function StudentOrders() {
   const [orders, setOrders] = useState([]);
@@ -15,7 +16,7 @@ export default function StudentOrders() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/student/${studentId}`);
+      const response = await fetch(`${API_URL}/orders/student/${studentId}`);
       const data = await response.json();
       setOrders(data);
       setLoading(false);
@@ -54,7 +55,7 @@ export default function StudentOrders() {
   const handleStartWork = async (orderId) => {
     try {
       setSubmitting(orderId);
-      const response = await fetch(`http://localhost:5000/api/orders/${orderId}/start-work`, {
+      const response = await fetch(`${API_URL}/orders/${orderId}/start-work`, {
         method: 'POST'
       });
       const data = await response.json();
@@ -70,7 +71,7 @@ export default function StudentOrders() {
   const handleSubmitWork = async (orderId) => {
     try {
       setSubmitting(orderId);
-      const response = await fetch(`http://localhost:5000/api/orders/${orderId}/submit-work`, {
+      const response = await fetch(`${API_URL}/orders/${orderId}/submit-work`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

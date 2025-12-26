@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { ShieldCheck } from 'lucide-react';
+import { API_URL } from '../config/apiConfig';
 
 export default function ClientDashboard() {
   const [orders, setOrders] = useState([]);
   const fetchOrders = () => {
-    fetch('http://localhost:5000/api/escrow/status').then(res => res.json()).then(setOrders);
+    fetch(`${API_URL}/escrow/status`).then(res => res.json()).then(setOrders);
   };
   useEffect(fetchOrders, []);
 
   const handleAction = async (id, approved) => {
-    await fetch('http://localhost:5000/api/escrow/release', {
+    await fetch(`${API_URL}/escrow/release`, {
       method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({transactionId: id, approved})
     });
     fetchOrders();

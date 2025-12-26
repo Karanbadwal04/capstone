@@ -13,7 +13,7 @@ export default function ClientTransactions() {
   const fetchTransactions = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/client/transactions', {
+      const response = await fetch(`${API_URL}/client/transactions`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {

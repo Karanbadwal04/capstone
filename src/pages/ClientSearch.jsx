@@ -100,7 +100,7 @@ export default function ClientSearch() {
   const fetchGigs = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/gigs/all');
+      const response = await fetch(`${API_URL}/gigs/all`);
       if (response.ok) {
         const data = await response.json();
         // Merge with mock data if needed (for demo purposes, using real data)
@@ -162,7 +162,7 @@ export default function ClientSearch() {
       const clientId = localStorage.getItem('userId') || 'client_' + Date.now();
       const studentId = selectedGig.seller.email;
       
-      const response = await fetch('http://localhost:5000/api/escrow/create', {
+      const response = await fetch(`${API_URL}/escrow/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -19,7 +19,7 @@ export default function StudentProfile() {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:5000/api/student/profile', {
+        const response = await fetch(`${API_URL}/student/profile`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.ok) {
@@ -51,7 +51,7 @@ export default function StudentProfile() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/student/profile', {
+      const response = await fetch(`${API_URL}/student/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

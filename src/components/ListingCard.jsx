@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import PaymentModal from './PaymentModal';
+import { API_URL } from '../config/apiConfig';
 
 export default function ListingCard({ title, price, image }) {
   const [showModal, setShowModal] = useState(false);
 
   const handlePaymentConfirm = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/escrow/create', {
+      const response = await fetch(`${API_URL}/escrow/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

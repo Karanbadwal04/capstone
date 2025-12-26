@@ -17,7 +17,7 @@ export default function StudentEarnings() {
   const fetchEarnings = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/student/earnings', {
+      const response = await fetch(`${API_URL}/student/earnings`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {

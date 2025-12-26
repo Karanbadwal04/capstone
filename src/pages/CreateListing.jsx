@@ -18,7 +18,7 @@ export default function CreateListing() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/gigs/create', {
+      const response = await fetch(`${API_URL}/gigs/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Search, Check, CheckCheck, ArrowLeft } from 'lucide-react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { API_URL } from '../config/apiConfig';
 
 export default function Messages() {
   const [searchParams] = useSearchParams();
@@ -41,7 +42,7 @@ export default function Messages() {
           }
         } else {
           // Fallback to fetching from backend
-          const response = await fetch(`http://localhost:5000/api/messages/user-info/${encodeURIComponent(currentUser)}`);
+          const response = await fetch(`${API_URL}/messages/user-info/${encodeURIComponent(currentUser)}`);
           if (response.ok) {
             const userInfo = await response.json();
             setCurrentUserName(userInfo.name || currentUser.split('@')[0]);
@@ -64,7 +65,7 @@ export default function Messages() {
       
       try {
         console.log('Loading conversations for:', currentUser);
-        const response = await fetch(`http://localhost:5000/api/messages/conversations/${encodeURIComponent(currentUser)}`);
+        const response = await fetch(`${API_URL}/messages/conversations/${encodeURIComponent(currentUser)}`);
         if (!response.ok) {
           console.error('Failed to load conversations:', response.status);
           return;
@@ -132,7 +133,7 @@ export default function Messages() {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:5000/api/messages/conversation/${encodeURIComponent(currentUser)}/${encodeURIComponent(selectedChat)}`
+          `${API_URL}/messages/conversation/${encodeURIComponent(currentUser)}/${encodeURIComponent(selectedChat)}`
         );
 
         if (!response.ok) return;
@@ -146,7 +147,7 @@ export default function Messages() {
         setMessages(sorted);
 
         // Mark as read
-        await fetch('http://localhost:5000/api/messages/mark-read', {
+        await fetch(`${API_URL}/messages/mark-read`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: currentUser, otherUserId: selectedChat }),
@@ -202,7 +203,7 @@ export default function Messages() {
     if (!inputText.trim() || !selectedChat) return;
     
     try {
-      const response = await fetch('http://localhost:5000/api/messages/send', {
+      const response = await fetch(`${API_URL}/messages/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
