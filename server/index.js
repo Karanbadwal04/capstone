@@ -58,3 +58,22 @@ process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
   process.exit(1);
 });
+
+// Log termination signals so platform logs show why container stopped
+process.on('SIGTERM', () => {
+  console.log('Received SIGTERM - shutting down gracefully');
+  process.exit(0);
+});
+
+process.on('SIGINT', () => {
+  console.log('Received SIGINT - shutting down');
+  process.exit(0);
+});
+
+// Periodic heartbeat to help debug sudden stops (will show in logs every 30s)
+setInterval(() => {
+  console.log(`heartbeat: process alive - ${new Date().toISOString()}`);
+}, 30000);
+
+// Dump minimal env info for debugging (avoid printing secrets)
+console.log('ENV DEBUG: PORT=', process.env.PORT, 'CORS_ORIGIN=', process.env.CORS_ORIGIN);
