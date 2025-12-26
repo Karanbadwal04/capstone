@@ -46,3 +46,15 @@ app.listen(PORT, () => {
   console.log(`🔐 Escrow System Active`);
   console.log(`👥 Student Marketplace Ready`);
 });
+
+// Global error handlers to surface unexpected failures in logs
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  // exit so hosting platform can restart the container with fresh state
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, p) => {
+  console.error('Unhandled Rejection at:', p, 'reason:', reason);
+  process.exit(1);
+});

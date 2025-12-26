@@ -1,18 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs');
+const { loadJson, saveJson, ensureDir } = require('../utils/fileStore');
 const path = require('path');
 
 // Path to gigs data file
 const gigsFilePath = path.join(__dirname, '../data/gigs.json');
 
-// Initialize gigs data file if it doesn't exist
-if (!fs.existsSync(path.dirname(gigsFilePath))) {
-  fs.mkdirSync(path.dirname(gigsFilePath), { recursive: true });
-}
+// Ensure directory exists
+ensureDir(gigsFilePath);
 
-if (!fs.existsSync(gigsFilePath)) {
-  const initialGigs = [
+// Initialize gigs data file if it doesn't exist
+let gigs = loadJson(gigsFilePath, null);
+if (!gigs) {
+  gigs = [
     {
       id: 1,
       title: "I will review your thesis for ₹1500",
@@ -25,15 +25,20 @@ if (!fs.existsSync(gigsFilePath)) {
       createdAt: new Date()
     }
   ];
-  fs.writeFileSync(gigsFilePath, JSON.stringify(initialGigs, null, 2));
+  try {
+    saveJson(gigsFilePath, gigs);
+  } catch (err) {
+    console.error('Failed to initialize gigs file:', err);
+  }
 }
-
-// Load gigs from file
-let gigs = JSON.parse(fs.readFileSync(gigsFilePath, 'utf-8'));
 
 // Save gigs to file
 const saveGigs = () => {
-  fs.writeFileSync(gigsFilePath, JSON.stringify(gigs, null, 2));
+  try {
+    saveJson(gigsFilePath, gigs);
+  } catch (err) {
+    console.error('Failed to save gigs file:', err);
+  }
 };
 
 // Get all gigs
