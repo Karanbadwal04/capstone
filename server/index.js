@@ -10,10 +10,12 @@ const ordersRoutes = require('./routes/orders');
 const messagesRoutes = require('./routes/messages');
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+// Allow overriding allowed origin via env (set CORS_ORIGIN to your frontend domain in production)
+const allowedOrigin = process.env.CORS_ORIGIN || '*';
+app.use(cors({ origin: allowedOrigin }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -29,6 +31,14 @@ app.use('/api/messages', messagesRoutes);
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'Micro-Job Server Running', timestamp: new Date() });
+});
+
+// Root API info - visiting /api will return a helpful JSON instead of "Cannot GET /api"
+app.get('/api', (req, res) => {
+  res.json({
+    message: 'Micro-Job API - see /api/health',
+    available: ['/api/health', '/api/gigs/all', '/api/auth/login', '/api/auth/register']
+  });
 });
 
 app.listen(PORT, () => {
