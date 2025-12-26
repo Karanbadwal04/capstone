@@ -35,7 +35,7 @@ app.get('/api/health', (req, res) => {
 // Root API info
 app.get('/api', (req, res) => {
   res.json({
-    message: 'Micro-Job API',
+    message: 'Micro-Job API - see /api/health',
     available: ['/api/health', '/api/gigs/all', '/api/auth/login', '/api/auth/register']
   });
 });
@@ -67,3 +67,11 @@ process.on('unhandledRejection', (reason) => {
   console.error('Unhandled Rejection:', reason);
   process.exit(1);
 });
+
+// Periodic heartbeat to help debug sudden stops (will show in logs every 30s)
+setInterval(() => {
+  console.log(`heartbeat: process alive - ${new Date().toISOString()}`);
+}, 30000);
+
+// Dump minimal env info for debugging (avoid printing secrets)
+console.log('ENV DEBUG: PORT=', process.env.PORT, 'CORS_ORIGIN=', process.env.CORS_ORIGIN);
