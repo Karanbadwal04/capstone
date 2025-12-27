@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Filter, Star, Clock, DollarSign, User, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import PaymentModal from '../components/PaymentModal';
+import { API_URL } from '../config/apiConfig';
 
 // Mock gigs data
 const MOCK_GIGS = [

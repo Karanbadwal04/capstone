@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit } from 'lucide-react';
+import { API_URL } from '../config/apiConfig';
 
 export default function StudentGigs() {
   const [gigs, setGigs] = useState([]);
