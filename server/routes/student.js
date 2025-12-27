@@ -5,6 +5,7 @@ const { loadJson, saveJson } = require('../utils/fileStore');
 const router = express.Router();
 
 const STUDENT_FILE = path.join(__dirname, '..', 'data', 'student.json');
+const USERS_FILE = path.join(__dirname, '..', 'data', 'users.json');
 
 const defaultData = {
   profiles: {
@@ -163,6 +164,21 @@ router.post('/profile', (req, res) => {
   
   persist();
   console.log('✅ Student profile saved:', email);
+  
+  // Also update users.json so name changes reflect in real-time (messages, conversations, etc.)
+  try {
+    const usersDB = loadJson(USERS_FILE, {});
+    if (!usersDB[email]) {
+      usersDB[email] = { email, name: name || '', role: 'student', verified: false };
+    } else {
+      if (name !== undefined) usersDB[email].name = name;
+    }
+    saveJson(USERS_FILE, usersDB);
+    console.log('✅ Updated users.json for email:', email);
+  } catch (err) {
+    console.error('Failed to update users.json:', err);
+  }
+  
   res.status(201).json({ message: 'Profile saved successfully', profile: studentDB.profiles[email] });
 });
 
