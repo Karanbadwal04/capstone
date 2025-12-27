@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_URL } from '../config/apiConfig';
 import { Package, DollarSign, Clock, FileText, Image, Tag } from 'lucide-react';
 
 export default function CreateListing() {
@@ -31,11 +32,13 @@ export default function CreateListing() {
         alert('Gig created successfully! Check "My Gigs" to see all your listings.');
         setFormData({ title: '', description: '', category: 'coding', price: '', deliveryDays: '3' });
       } else {
-        const error = await response.json();
-        alert('Error creating gig: ' + (error.error || 'Unknown error'));
+        let errorText = 'Unknown error';
+        try { const error = await response.json(); errorText = error.error || JSON.stringify(error); } catch (_) { errorText = response.statusText || String(response.status); }
+        alert('Error creating gig: ' + errorText);
       }
     } catch (err) {
-      alert('Error creating gig');
+      console.error('Create gig failed:', err);
+      alert('Error creating gig: ' + (err.message || err));
     }
   };
 
