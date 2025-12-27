@@ -168,15 +168,21 @@ router.post('/profile', (req, res) => {
   // Also update users.json so name changes reflect in real-time (messages, conversations, etc.)
   try {
     const usersDB = loadJson(USERS_FILE, {});
+    console.log('Loaded users.json, updating name for:', email);
     if (!usersDB[email]) {
       usersDB[email] = { email, name: name || '', role: 'student', verified: false };
+      console.log('Created new user entry:', email);
     } else {
-      if (name !== undefined) usersDB[email].name = name;
+      if (name !== undefined) {
+        const oldName = usersDB[email].name;
+        usersDB[email].name = name;
+        console.log(`Updated name: "${oldName}" → "${name}"`);
+      }
     }
     saveJson(USERS_FILE, usersDB);
-    console.log('✅ Updated users.json for email:', email);
+    console.log('✅ Successfully updated users.json for email:', email);
   } catch (err) {
-    console.error('Failed to update users.json:', err);
+    console.error('❌ Failed to update users.json:', err.message);
   }
   
   res.status(201).json({ message: 'Profile saved successfully', profile: studentDB.profiles[email] });

@@ -125,6 +125,26 @@ export default function Messages() {
                 <div className="text-lg font-bold text-white">Conversations</div>
                 <div className="text-sm text-white/60">{conversations.length} chats</div>
               </div>
+              <button 
+                onClick={() => {
+                  console.log('Manually refreshing conversations...');
+                  const load = async () => {
+                    try {
+                      const url = `${API_URL}/messages/conversations/${encodeURIComponent(currentUser)}`;
+                      const res = await fetch(url);
+                      if (res.ok) {
+                        const data = await res.json();
+                        setConversations(data);
+                        console.log('✅ Conversations refreshed');
+                      }
+                    } catch (e) { console.error(e); }
+                  };
+                  load();
+                }}
+                className="mt-2 text-xs bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded transition"
+              >
+                🔄 Refresh
+              </button>
             </div>
 
             <div className="flex-1 overflow-y-auto">
