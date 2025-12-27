@@ -39,6 +39,9 @@ const defaultClientData = {
 
 let clientDB = loadJson(CLIENT_FILE, defaultClientData);
 
+// Ensure profiles object exists
+if (!clientDB.profiles) clientDB.profiles = {};
+
 const persist = () => saveJson(CLIENT_FILE, clientDB);
 
 // Get client transactions
@@ -92,7 +95,7 @@ router.post('/profile', (req, res) => {
     return res.status(400).json({ error: 'Email is required' });
   }
   
-  // Store client profile in a separate map (can also use clientDB)
+  // Ensure profiles object exists (separated from client transactions)
   if (!clientDB.profiles) clientDB.profiles = {};
   
   // Initialize if client doesn't exist
@@ -125,6 +128,7 @@ router.post('/profile', (req, res) => {
   }
   
   persist();
+  console.log('✅ Client profile saved:', email);
   res.status(201).json({ message: 'Profile saved successfully', profile: clientDB.profiles[email] });
 });
 

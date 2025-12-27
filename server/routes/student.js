@@ -49,6 +49,9 @@ const defaultData = {
 
 let studentDB = loadJson(STUDENT_FILE, defaultData);
 
+// Ensure profiles object exists
+if (!studentDB.profiles) studentDB.profiles = {};
+
 const persist = () => saveJson(STUDENT_FILE, studentDB);
 
 // Get student profile
@@ -120,6 +123,9 @@ router.post('/profile', (req, res) => {
     return res.status(400).json({ error: 'Email is required' });
   }
   
+  // Ensure profiles object exists
+  if (!studentDB.profiles) studentDB.profiles = {};
+  
   // Initialize if student doesn't exist
   if (!studentDB.profiles[email]) {
     studentDB.profiles[email] = {
@@ -156,6 +162,7 @@ router.post('/profile', (req, res) => {
   }
   
   persist();
+  console.log('✅ Student profile saved:', email);
   res.status(201).json({ message: 'Profile saved successfully', profile: studentDB.profiles[email] });
 });
 
