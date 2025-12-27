@@ -38,6 +38,8 @@ export default function Messages() {
         }
         const data = await res.json();
         console.log('Conversations loaded:', data.length);
+        console.log('First conversation object:', data[0]);
+        console.log('Full data:', JSON.stringify(data, null, 2));
         setConversations(data);
       } catch (e) {
         console.error('Error loading conversations:', e);
