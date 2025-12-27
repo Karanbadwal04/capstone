@@ -29,12 +29,18 @@ export default function Messages() {
     if (!currentUser) return;
     const load = async () => {
       try {
-        const res = await fetch(`${API_URL}/messages/conversations/${encodeURIComponent(currentUser)}`);
-        if (!res.ok) return;
+        const url = `${API_URL}/messages/conversations/${encodeURIComponent(currentUser)}`;
+        console.log('Fetching conversations from:', url);
+        const res = await fetch(url);
+        if (!res.ok) {
+          console.error('Failed to fetch conversations:', res.status);
+          return;
+        }
         const data = await res.json();
+        console.log('Conversations loaded:', data.length);
         setConversations(data);
       } catch (e) {
-        console.error(e);
+        console.error('Error loading conversations:', e);
       }
     };
     load();
@@ -48,9 +54,16 @@ export default function Messages() {
     const load = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${API_URL}/messages/conversation/${encodeURIComponent(currentUser)}/${encodeURIComponent(activeChat)}`);
-        if (!res.ok) return;
+        const url = `${API_URL}/messages/conversation/${encodeURIComponent(currentUser)}/${encodeURIComponent(activeChat)}`;
+        console.log('Fetching messages from:', url);
+        const res = await fetch(url);
+        console.log('Response status:', res.status);
+        if (!res.ok) {
+          console.error('Failed to fetch messages:', res.status);
+          return;
+        }
         const data = await res.json();
+        console.log('Messages loaded:', data.length);
         if (!mounted) return;
         setMessages(data);
         await fetch(`${API_URL}/messages/mark-read`, {
@@ -59,7 +72,7 @@ export default function Messages() {
         });
         setTimeout(() => { if (containerRef.current) containerRef.current.scrollTop = containerRef.current.scrollHeight; }, 80);
       } catch (e) {
-        console.error(e);
+        console.error('Error loading messages:', e);
       } finally { setLoading(false); }
     };
     load();
@@ -117,7 +130,10 @@ export default function Messages() {
                 <div className="p-6 text-center text-white/60">No conversations yet</div>
               ) : (
                 conversations.map(conv => (
-                  <div key={conv.conversationId} onClick={() => setActiveChat(conv.otherUserId)}
+                  <div key={conv.conversationId} onClick={() => {
+                    console.log('Clicked conversation:', conv.otherUserId);
+                    setActiveChat(conv.otherUserId);
+                  }}
                     className={`flex items-center gap-3 p-3 cursor-pointer transition ${activeChat === conv.otherUserId ? 'bg-white/6 border-l-4 border-l-brand-orange' : 'hover:bg-white/5'}`}>
                     <Avatar name={conv.otherUserName} />
                     <div className="flex-1">
