@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Mail, Shield, Edit2, Save, X, Camera, CheckCircle } from 'lucide-react';
 import CustomAlert from '../components/CustomAlert';
+import { API_URL } from '../config/apiConfig';
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -50,16 +51,38 @@ export default function Profile() {
     if (legacyProfile) {
       localStorage.removeItem('profileData');
     }
+    
+    // Try to load from backend
+    const loadFromBackend = async () => {
+      try {
+        const endpoint = type === 'student' ? '/api/student/profile' : `/api/client/profile/${email}`;
+        const response = await fetch(`${API_URL}${endpoint}`);
+        if (response.ok) {
+          const backendProfile = await response.json();
+          console.log('Loaded profile from backend:', backendProfile);
+          setProfileData(prev => ({ ...prev, ...backendProfile, email }));
+        }
+      } catch (err) {
+        console.log('Could not load from backend, using local:', err);
+      }
+    };
+    
+    if (email && type) {
+      loadFromBackend();
+    }
   }, []);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfileData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const profileKey = `profileData:${userEmail}`;
     const dataToSave = { ...profileData, email: userEmail };
+    
+    // Save to localStorage (for immediate UI feedback)
     localStorage.setItem(profileKey, JSON.stringify(dataToSave));
     
     // Also save to allProfiles for public viewing
@@ -67,8 +90,31 @@ export default function Profile() {
     allProfiles[userEmail] = { ...dataToSave, verified: isVerified };
     localStorage.setItem('allProfiles', JSON.stringify(allProfiles));
     
-    setIsEditing(false);
-    setAlert({ message: '✅ Profile updated successfully!', type: 'success' });
+    // Determine endpoint based on user type
+    const endpoint = userType === 'student' ? '/api/student/profile' : '/api/client/profile';
+    
+    try {
+      const response = await fetch(`${API_URL}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToSave)
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        setIsEditing(false);
+        setAlert({ message: '✅ Profile updated and saved successfully!', type: 'success' });
+        console.log('Backend save response:', result);
+      } else {
+        setIsEditing(false);
+        setAlert({ message: '⚠️ Profile updated locally. Backend save failed, but data is retained.', type: 'warning' });
+        console.error('Backend save failed:', response.status);
+      }
+    } catch (err) {
+      setIsEditing(false);
+      setAlert({ message: '⚠️ Profile updated locally. Network error, but data is retained.', type: 'warning' });
+      console.error('Backend save error:', err);
+    }
   };
 
   const handleAddSkill = () => {

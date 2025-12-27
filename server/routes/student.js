@@ -113,4 +113,50 @@ router.get('/gigs', (req, res) => {
   res.json([]);
 });
 
+// Save/update profile by email (new POST endpoint for frontend)
+router.post('/profile', (req, res) => {
+  const { email, name, phone, bio, location, university, major, graduationYear, skills, hourlyRate, portfolio } = req.body;
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+  
+  // Initialize if student doesn't exist
+  if (!studentDB.profiles[email]) {
+    studentDB.profiles[email] = {
+      email,
+      name: name || '',
+      phone: phone || '',
+      bio: bio || '',
+      location: location || '',
+      university: university || '',
+      major: major || '',
+      graduationYear: graduationYear || '',
+      skills: skills || [],
+      hourlyRate: hourlyRate || '',
+      portfolio: portfolio || [],
+      rating: 0,
+      verified: false,
+      earnings: 0,
+      inEscrow: 0,
+      createdAt: new Date()
+    };
+  } else {
+    // Update existing profile
+    const profile = studentDB.profiles[email];
+    if (name !== undefined) profile.name = name;
+    if (phone !== undefined) profile.phone = phone;
+    if (bio !== undefined) profile.bio = bio;
+    if (location !== undefined) profile.location = location;
+    if (university !== undefined) profile.university = university;
+    if (major !== undefined) profile.major = major;
+    if (graduationYear !== undefined) profile.graduationYear = graduationYear;
+    if (skills !== undefined) profile.skills = skills;
+    if (hourlyRate !== undefined) profile.hourlyRate = hourlyRate;
+    if (portfolio !== undefined) profile.portfolio = portfolio;
+  }
+  
+  persist();
+  res.status(201).json({ message: 'Profile saved successfully', profile: studentDB.profiles[email] });
+});
+
 module.exports = router;

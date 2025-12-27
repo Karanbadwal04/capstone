@@ -85,4 +85,59 @@ router.post('/hire', (req, res) => {
   });
 });
 
+// Save/update client profile by email
+router.post('/profile', (req, res) => {
+  const { email, name, phone, bio, location, company, industry, skills, hourlyRate, portfolio } = req.body;
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+  
+  // Store client profile in a separate map (can also use clientDB)
+  if (!clientDB.profiles) clientDB.profiles = {};
+  
+  // Initialize if client doesn't exist
+  if (!clientDB.profiles[email]) {
+    clientDB.profiles[email] = {
+      email,
+      name: name || '',
+      phone: phone || '',
+      bio: bio || '',
+      location: location || '',
+      company: company || '',
+      industry: industry || '',
+      skills: skills || [],
+      hourlyRate: hourlyRate || '',
+      portfolio: portfolio || [],
+      createdAt: new Date()
+    };
+  } else {
+    // Update existing profile
+    const profile = clientDB.profiles[email];
+    if (name !== undefined) profile.name = name;
+    if (phone !== undefined) profile.phone = phone;
+    if (bio !== undefined) profile.bio = bio;
+    if (location !== undefined) profile.location = location;
+    if (company !== undefined) profile.company = company;
+    if (industry !== undefined) profile.industry = industry;
+    if (skills !== undefined) profile.skills = skills;
+    if (hourlyRate !== undefined) profile.hourlyRate = hourlyRate;
+    if (portfolio !== undefined) profile.portfolio = portfolio;
+  }
+  
+  persist();
+  res.status(201).json({ message: 'Profile saved successfully', profile: clientDB.profiles[email] });
+});
+
+// Get client profile by email
+router.get('/profile/:email', (req, res) => {
+  const { email } = req.params;
+  if (!clientDB.profiles) clientDB.profiles = {};
+  const profile = clientDB.profiles[email];
+  
+  if (!profile) {
+    return res.status(404).json({ error: 'Profile not found' });
+  }
+  res.json(profile);
+});
+
 module.exports = router;
