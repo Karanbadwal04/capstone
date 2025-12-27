@@ -83,7 +83,7 @@ export default function Messages() {
   }, [currentUser, activeChat]);
 
   const getName = (id) => {
-    const c = conversations.find(x => x.otherUser === id);
+    const c = conversations.find(x => (x.otherUser === id) || (x.otherUserId === id));
     return c?.otherUserName || id.split('@')[0];
   };
 
@@ -131,23 +131,27 @@ export default function Messages() {
               {conversations.length === 0 ? (
                 <div className="p-6 text-center text-white/60">No conversations yet</div>
               ) : (
-                conversations.map(conv => (
+                conversations.map(conv => {
+                  const otherId = conv.otherUser || conv.otherUserId || null;
+                  const id = otherId || conv.otherUserName || conv.conversationId;
+                  return (
                   <div key={conv.conversationId} onClick={() => {
-                    console.log('Clicked conversation:', conv.otherUser);
-                    setActiveChat(conv.otherUser);
+                    console.log('Clicked conversation:', id, 'raw conv:', conv);
+                    setActiveChat(id);
                   }}
-                    className={`flex items-center gap-3 p-3 cursor-pointer transition ${activeChat === conv.otherUser ? 'bg-white/6 border-l-4 border-l-brand-orange' : 'hover:bg-white/5'}`}>
-                    <Avatar name={conv.otherUserName} />
+                    className={`flex items-center gap-3 p-3 cursor-pointer transition ${activeChat === id ? 'bg-white/6 border-l-4 border-l-brand-orange' : 'hover:bg-white/5'}`}>
+                    <Avatar name={conv.otherUserName || conv.otherUser || conv.otherUserId} />
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <div className="font-medium text-white truncate">{conv.otherUserName}</div>
+                        <div className="font-medium text-white truncate">{conv.otherUserName || conv.otherUser || conv.otherUserId}</div>
                         <div className="text-xs text-white/50">{conv.lastMessage ? new Date(conv.lastMessage.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : ''}</div>
                       </div>
                       <div className="text-sm text-white/60 truncate mt-1">{conv.lastMessage?.text || 'No messages yet'}</div>
                     </div>
                     {conv.unreadCount > 0 && <span className="ml-2 px-2 py-0.5 bg-brand-orange text-white text-xs rounded-full">{conv.unreadCount}</span>}
                   </div>
-                ))
+                  );
+                })
               )}
             </div>
           </aside>
