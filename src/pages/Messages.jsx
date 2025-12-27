@@ -83,7 +83,7 @@ export default function Messages() {
   }, [currentUser, activeChat]);
 
   const getName = (id) => {
-    const c = conversations.find(x => x.otherUserId === id);
+    const c = conversations.find(x => x.otherUser === id);
     return c?.otherUserName || id.split('@')[0];
   };
 
@@ -133,10 +133,10 @@ export default function Messages() {
               ) : (
                 conversations.map(conv => (
                   <div key={conv.conversationId} onClick={() => {
-                    console.log('Clicked conversation:', conv.otherUserId);
-                    setActiveChat(conv.otherUserId);
+                    console.log('Clicked conversation:', conv.otherUser);
+                    setActiveChat(conv.otherUser);
                   }}
-                    className={`flex items-center gap-3 p-3 cursor-pointer transition ${activeChat === conv.otherUserId ? 'bg-white/6 border-l-4 border-l-brand-orange' : 'hover:bg-white/5'}`}>
+                    className={`flex items-center gap-3 p-3 cursor-pointer transition ${activeChat === conv.otherUser ? 'bg-white/6 border-l-4 border-l-brand-orange' : 'hover:bg-white/5'}`}>
                     <Avatar name={conv.otherUserName} />
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
