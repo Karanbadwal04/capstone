@@ -55,7 +55,7 @@ export default function Profile() {
     // Try to load from backend
     const loadFromBackend = async () => {
       try {
-        const endpoint = type === 'student' ? '/api/student/profile' : `/api/client/profile/${email}`;
+        const endpoint = type === 'student' ? '/student/profile' : `/client/profile/${email}`;
         const response = await fetch(`${API_URL}${endpoint}`);
         if (response.ok) {
           const backendProfile = await response.json();
@@ -91,7 +91,7 @@ export default function Profile() {
     localStorage.setItem('allProfiles', JSON.stringify(allProfiles));
     
     // Determine endpoint based on user type
-    const endpoint = userType === 'student' ? '/api/student/profile' : '/api/client/profile';
+    const endpoint = userType === 'student' ? '/student/profile' : '/client/profile';
     
     try {
       const response = await fetch(`${API_URL}${endpoint}`, {
